@@ -1,0 +1,62 @@
+version: "2"
+
+services:
+  webapps:
+    image: tianon/true
+    volumes:
+      - ${APP_PATH}:/var/www
+  mongo:
+    build:
+      context: ./mongo
+    volumes:
+      - ${DATA_PATH}/db:/data/db
+    ports:
+      - "${MONGO_PORT}:27017"
+    networks:
+      - backend
+  redis:
+    build:
+      context: ./redis
+      args:
+        - PUID=${WORKSPACE_PUID}
+        - PGID=${WORKSPACE_PGID}
+        - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+  node:
+    build:
+      context: ./node
+    volumes_from:
+      - webapps
+    expose:
+      - "3030"
+    depends_on:
+      - webapps
+      - mongo
+    networks:
+      - backend              
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        - PUID=${WORKSPACE_PUID}
+    volumes_from:
+      - webapps
+    volumes:
+      - ${LOG_PATH}/nginx:/var/log/nginx
+      - ./nginx/sites:/etc/nginx/sites-available
+    ports:
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
+    networks:
+      - frontend
+      - backend    
+networks:
+  frontend:
+    driver: "bridge"
+  backend:
+    driver: "bridge"

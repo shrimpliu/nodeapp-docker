@@ -1,0 +1,15 @@
+server {
+    listen      80;
+    server_name nodeapp.dev.com;
+    location / {
+        proxy_redirect off;
+        proxy_set_header host $host;
+        proxy_set_header x-real-ip $remote_addr;
+        proxy_set_header x-forwarded-for $proxy_add_x_forwarded_for;
+        proxy_pass http://node:3030;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
