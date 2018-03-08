@@ -4,8 +4,6 @@ MAINTAINER Shrimp Liu <liu.shrimp@gmail.com>
 
 WORKDIR /var/www
 
-RUN npm install -g nodemon
+RUN npm install -g pm2
 
-RUN npm install
-
-CMD [ "nodemon", "src/" ]
+CMD npm install --production && pm2-runtime start src/ --watch -i 2
