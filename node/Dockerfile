@@ -4,6 +4,6 @@ MAINTAINER Shrimp Liu <liu.shrimp@gmail.com>
 
 WORKDIR /var/www
 
-RUN npm install -g pm2
+RUN npm install --production
 
-CMD npm install --production && pm2-runtime start src/ --watch -i 2
+CMD npm start src/
