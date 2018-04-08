@@ -2,4 +2,4 @@
 .env
 *.sh
 nginx/sites/*.conf
-app/*
+node/app/*
