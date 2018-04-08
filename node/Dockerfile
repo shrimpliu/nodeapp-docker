@@ -11,7 +11,11 @@ ENV PGID ${PGID}
 RUN usermod -u ${PUID} node
 RUN groupmod -g ${PGID} node
 
+ADD ./app /var/www
+
 WORKDIR /var/www
+
+VOLUME /var/log/node
 
 RUN npm install --production
 

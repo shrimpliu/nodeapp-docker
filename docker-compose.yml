@@ -1,10 +1,6 @@
 version: "2"
 
 services:
-  webapps:
-    image: tianon/true
-    volumes:
-      - ${APP_PATH}:/var/www
   mongo:
     build:
       context: ./mongo
@@ -33,12 +29,11 @@ services:
       args:
         - PUID=${WORKSPACE_PUID}
         - PGID=${WORKSPACE_PGID}
-    volumes_from:
-      - webapps
+    volumes:
+      - ${LOG_PATH}/node:/var/log/node
     expose:
       - "3030"
     depends_on:
-      - webapps
       - mongo
     networks:
       - backend              
@@ -48,8 +43,6 @@ services:
       args:
         - PUID=${WORKSPACE_PUID}
         - PGID=${WORKSPACE_PGID}
-    volumes_from:
-      - webapps
     volumes:
       - ${LOG_PATH}/nginx:/var/log/nginx
       - ./nginx/sites:/etc/nginx/sites-available
